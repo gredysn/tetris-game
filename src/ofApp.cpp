@@ -3,6 +3,16 @@ using namespace std;
 
 //--------------------------------------------------------------
 void ofApp::setup(){
+    
+    background.load("images/aot_pixelated.png");
+
+    music.load("sounds/tetris_theme.mp3");
+    music.setLoop(true);
+    music.setVolume(0.6f);
+    music.play();
+    
+    muted = false;
+    
     ofSetWindowTitle("Tetris");
     ofSetBackgroundColor(ofColor::black);
     ofSetFrameRate(60);
@@ -35,6 +45,9 @@ void ofApp::setup(){
     loseSound.setLoop(false);
     loseSound.setVolume(1.0f);
 
+
+    updateMusicState();
+
     spawnNewPiece();
 }
 
@@ -52,6 +65,14 @@ void ofApp::update(){
 
 //--------------------------------------------------------------
 void ofApp::draw(){
+    
+   // En vez de toda la ventana:
+int boardWidthPixels  = board.getWidth()  * cellSize;
+int boardHeightPixels = board.getHeight() * cellSize;
+
+background.draw(boardOffsetX, boardOffsetY,
+                boardWidthPixels, boardHeightPixels);
+   
     // Draw board
     board.draw(cellSize, boardOffsetX, boardOffsetY);
     ofPushStyle();
@@ -137,6 +158,12 @@ void ofApp::draw(){
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
+     if (key == 'm' || key == 'M') {
+       muted = !muted;        // usamos la variable del .h
+    updateMusicState();    // que ella se encargue de música y SFX
+}
+
+   
     // Allow new game even when gameOver
     if (gameOver) {
         if (key == 'n' || key == 'N') { resetGame(); }
@@ -350,13 +377,16 @@ void ofApp::playLineClear(int linesCleared) {
 }
 
 void ofApp::updateMusicState() {
-    float vol = muted ? 0.0f : 0.6f;
-    musicPlayer.setVolume(vol);
-
-    // muted ? 0.0f : 0.8f => if muted, silence sound; else normal volume
-    rotateSound.setVolume(muted ? 0.0f : 0.8f);
-    lineClearSound.setVolume(muted ? 0.0f : 0.9f);
-    if (!muted && !musicPlayer.isPlaying() && !gameOver) musicPlayer.play();
+      if (muted) {
+        // Música en mute
+        music.setPaused(true);
+    } else {
+        // Música sonando
+        music.setPaused(false);
+        if (!music.isPlaying() && !gameOver) {
+            music.play();
+        }
+    }
 }
 //--------------------------------------------------------------
 
@@ -374,7 +404,7 @@ void ofApp::allocateNextIfNeeded() {
 
 //--------------------------------------------------------------
 void ofApp::resetGame() {
-    // Clear board & stats
+  // Clear board & stats
     board.reset();
     score = 0;
     level = 1;
@@ -388,11 +418,8 @@ void ofApp::resetGame() {
     delete nextPiece;    nextPiece = nullptr;
     delete prevPiece;    prevPiece = nullptr;
 
-    if (!muted) {
-        if (musicPlayer.isPlaying()) musicPlayer.stop();
-        musicPlayer.play();
-        musicPlayer.setVolume(0.6f);
-    }
-
     spawnNewPiece();
+
+    // Muy importante: respetar si estaba muteado
+    updateMusicState();
 }

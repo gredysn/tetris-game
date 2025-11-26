@@ -37,11 +37,17 @@ private:
     int pendingHardDropBonus = 0;
 
     // Audio
-    ofSoundPlayer musicPlayer;     // Background music
+   // Background music
+   
     ofSoundPlayer rotateSound;     // Rotation SFX
     ofSoundPlayer lineClearSound;  // Line clear SFX
     ofSoundPlayer loseSound;       // Game over SFX
     
+    ofImage background;
+   
+    ofSoundPlayer music; 
+   
+
     void spawnNewPiece();                      // Create & position next piece
     bool canMovePiece(int dx, int dy);         // Collision test for translation
     void movePiece(int dx, int dy);            // Apply movement if valid
@@ -52,8 +58,10 @@ private:
     void lockPiece();                          // Merge piece into board + line clear
     void resetGame();                          // Reinitialize state
     PieceType getRandomPieceType();            // Uniform random piece type (simple RNG)
-    void playLineClear(int linesCleared);      // Play SFX if lines were cleared
-    void updateMusicState();                   // Handle mute/unmute logic
+    void  playLineClear(int linesCleared); 
+         // Play SFX if lines were cleared
+    void updateMusicState();    
+                   // Handle mute/unmute logic
     void recalcSpeed(int linesClearedJustNow); // Adjust gravity speed by level
     void allocateNextIfNeeded();               // Lazy-create next piece
     void drawGhostPiece();                     // Draw landing shadow of current piece
