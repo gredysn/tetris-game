@@ -15,6 +15,9 @@ void Piece::move(int dx, int dy) {
 // in-game tip: Read about modulo operator on CPLUSPLUS.com, and how the pieces are defined in setShape() with rotationState.
 void Piece::rotate() {
 
+    rotationState = (rotationState + 1) % 4;
+    setShape();
+
 }
 
 vector<ofVec2f> Piece::getCells(int baseX, int baseY) const {

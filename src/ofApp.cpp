@@ -124,9 +124,11 @@ void ofApp::draw(){
     ofSetColor(255);
     ofDrawBitmapString("Controls:", sideX, controlsY);
     ofDrawBitmapString("< >: Move", sideX, controlsY + 20);
-    ofDrawBitmapString("R: Rotate", sideX, controlsY + 40);
-    ofDrawBitmapString("V: Soft Drop", sideX, controlsY + 60);
-    ofDrawBitmapString("N: New Game", sideX, controlsY + 80);
+    ofDrawBitmapString("A: Left", sideX, controlsY + 40);
+    ofDrawBitmapString("D: Right", sideX, controlsY + 60);
+    ofDrawBitmapString("R: Rotate", sideX, controlsY + 80);
+    ofDrawBitmapString("S: Soft Drop", sideX, controlsY + 100);
+    ofDrawBitmapString("N: New Game", sideX, controlsY + 120);
     
     if (gameOver) {
 
@@ -143,21 +145,30 @@ void ofApp::keyPressed(int key){
     
     switch (key) {
         case OF_KEY_LEFT:
+        case 'a':
+        case 'A':
             movePiece(-1, 0);
             break;
         case OF_KEY_RIGHT:
+        case 'd':
+        case 'D':
             movePiece(1, 0);
             break;
+        case 'w':
+        case 'W':    
         case 'r':
         case 'R':
         case OF_KEY_UP:
             rotatePiece();
             break;
         case OF_KEY_DOWN:
+        case 's':
+        case 'S':
             dropPiece();
             break;
         case 'n':
         case 'N':
+            resetGame();
             break;
         case 'p':
         case 'P':
