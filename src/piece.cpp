@@ -32,7 +32,14 @@ vector<ofVec2f> Piece::getCells(int baseX, int baseY) const {
 ofColor Piece::getColor() const {
     switch (type) {
         // Phase 1: Define colors for each PieceType
-
+         case PieceType::I: return ofColor(255, 198, 92);
+        case PieceType::O: return ofColor(242, 220, 180);
+        case PieceType::T: return ofColor(205, 95, 50);
+        case PieceType::S: return ofColor(230, 120, 60);
+        case PieceType::Z: return ofColor(185, 60, 50);
+        case PieceType::J: return ofColor(140, 90, 50);
+        case PieceType::L: return ofColor(255, 140, 70);
+        default:
     }
     return ofColor::white; // Fallback
 }
