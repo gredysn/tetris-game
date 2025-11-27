@@ -56,7 +56,16 @@ bool Board::canPlacePiece(const Piece& piece) const {
 // Phase 2: Implement placePiece
 // in-game tip: Using the CPLUSPLUS.com see how static_cast works
 void Board::placePiece(const Piece& piece) {
+    auto cells = piece.getCells(piece.posX, piece.posY);
 
+    for(const auto& c : cells){
+        int x = static_cast<int>(c.x);
+        int y = static_cast<int>(c.y);
+
+        if(x >= 0 && x < width && y >= 0 && y < height){
+            grid[y][x] = piece.getColor();
+        }
+    }
 }
 
 int Board::clearLines() {
