@@ -46,6 +46,8 @@ private:
     ofImage background;
    
     ofSoundPlayer music; 
+    //Game Over text png
+    ofImage gameOverImage;
    
 
     void spawnNewPiece();                      // Create & position next piece

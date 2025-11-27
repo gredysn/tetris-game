@@ -44,7 +44,8 @@ void ofApp::setup(){
     loseSound.setMultiPlay(false);
     loseSound.setLoop(false);
     loseSound.setVolume(1.0f);
-
+    //gameOver:
+    gameOverImage.load("images/GameOver.png");
 
     updateMusicState();
 
@@ -54,6 +55,9 @@ void ofApp::setup(){
 //--------------------------------------------------------------
 void ofApp::update(){
 
+
+    //phase2 : isGameOver()
+    if(gameOver) return ;
     dropTimer += ofGetLastFrameTime(); // Accumulate elapsed frame time
 
     // Move piece down when interval reached
@@ -151,8 +155,18 @@ background.draw(boardOffsetX, boardOffsetY,
     ofDrawBitmapString("S: Soft Drop", sideX, controlsY + 100);
     ofDrawBitmapString("N: New Game", sideX, controlsY + 120);
     
+    //phase2:
     if (gameOver) {
 
+        ofSetColor(255);
+        gameOverImage.draw(
+            boardOffsetX + (board.getWidth() * cellSize - gameOverImage.getWidth() * 0.3f) / 2,
+            boardOffsetY + (board.getHeight() * cellSize - gameOverImage.getHeight() * 0.3f) / 2,
+         gameOverImage.getWidth() * 0.3f, gameOverImage.getHeight() * 0.3f  
+        );
+        
+        return;
+        
     }
 }
 
@@ -219,6 +233,11 @@ void ofApp::spawnNewPiece() {
     nextPiece = new Piece(getRandomPieceType());
     currentPiece->posX = board.getWidth() / 2 - 1;
     currentPiece->posY = 0;
+    //phase2 : isGameover()
+    if(board.isGameOver()){
+        gameOver = true;
+    }
+
 
 }
 

@@ -113,3 +113,13 @@ void Board::dropLinesAbove(int row) {
     }
     fill(grid[0].begin(), grid[0].end(), ofColor::black);
 }
+
+//phase2: GameOver()
+bool Board::isGameOver() const{
+    for(int x = 0; x < width; ++x){
+        if(grid[0][x] != ofColor::black){
+            return true;
+        }
+    }
+    return false;
+}
