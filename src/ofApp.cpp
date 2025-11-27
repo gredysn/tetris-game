@@ -377,7 +377,17 @@ void ofApp::lockPiece() {
 
 // Phase 3: Implement previous piece switching
 void ofApp::switchToPrevPiece() {
-
+        if(!currentPiece) return;
+        if(!prevPiece){
+            prevPiece = currentPiece;
+            currentPiece = nextPiece;
+            nextPiece = new Piece(getRandomPieceType());
+        }
+        else{
+            Piece* temp = currentPiece;
+            currentPiece = prevPiece;
+            prevPiece = temp;
+        }
 }
 
 //--------------------------------------------------------------
