@@ -17,10 +17,10 @@ void ofApp::setup(){
     ofSetBackgroundColor(ofColor::black);
     ofSetFrameRate(60);
     
-    cellSize = 30;
+    cellSize = 36;
     boardOffsetX = 50;
     boardOffsetY = 50;
-    dropInterval = 0.5f;
+    dropInterval = 0.8f;
     dropTimer = 0;
     score = 0;
     gameOver = false;
@@ -28,7 +28,7 @@ void ofApp::setup(){
     nextPiece = nullptr;
     level = 1;
     totalLinesCleared = 0;
-    baseDropInterval = 0.5f;
+    baseDropInterval = 0.8f;
 
     // Audio setup 
     // # Phase 1: Load music file from "data/sounds/" directory
@@ -59,26 +59,35 @@ void ofApp::setup(){
 //--------------------------------------------------------------
 void ofApp::update(){
 
+ if (gameOver) return;
 
-    //phase2 : isGameOver()
-    if(gameOver) return ;
-    dropTimer += ofGetLastFrameTime(); // Accumulate elapsed frame time
+    // Tiempo (en segundos) desde el último frame
+    float dt = ofGetLastFrameTime();
 
-    // Move piece down when interval reached
+    // Por si dt viene raro (0 o negativo)
+    if (dt <= 0) {
+        dt = 1.0f / 60.0f;
+    }
+
+    // Acumulamos tiempo
+    dropTimer += dt;
+
+    // Cuando el tiempo acumulado supera el intervalo, bajamos la pieza
     if (dropTimer >= dropInterval) {
         dropPiece();
-        dropTimer = 0;
+        // Restamos el intervalo en vez de poner 0, por si el frame fue pesado
+        dropTimer -= dropInterval;
     }
 }
-
 //--------------------------------------------------------------
 void ofApp::draw(){
 
     //gameStart screen
     if(isStartScreen){
         ofSetColor(255);
-        gameStartImage.draw(0, 0, ofGetWidth(), ofGetHeight());
+         gameStartImage.draw(0, 0, ofGetWidth(), ofGetHeight());
         return;
+
     }
     
    // En vez de toda la ventana:
@@ -165,6 +174,8 @@ background.draw(boardOffsetX, boardOffsetY,
     ofDrawBitmapString("R: Rotate", sideX, controlsY + 80);
     ofDrawBitmapString("S: Soft Drop", sideX, controlsY + 100);
     ofDrawBitmapString("N: New Game", sideX, controlsY + 120);
+    ofDrawBitmapString("M: Mute / Unmute", sideX, controlsY + 140);
+    ofDrawBitmapString("Q: Hard Drop", sideX, controlsY + 160);
     
     //phase2:
     if (gameOver) {
@@ -190,8 +201,8 @@ void ofApp::keyPressed(int key){
         return;
     }
      if (key == 'm' || key == 'M') {
-       muted = !muted;        // usamos la variable del .h
-    updateMusicState();    // que ella se encargue de música y SFX
+       muted = !muted;       
+    updateMusicState();    
 }
 
    
@@ -218,7 +229,14 @@ void ofApp::keyPressed(int key){
         case 'R':
         case OF_KEY_UP:
             rotatePiece();
+           
             break;
+        case 'q':
+        case 'Q':
+        hardDrop();
+       
+        break;
+        
         case OF_KEY_DOWN:
         case 's':
         case 'S':
@@ -308,11 +326,34 @@ void ofApp::dropPiece() {
 
 // # Phase 2: Implement hard drop functionality
 void ofApp::hardDrop() {
+if (!currentPiece || gameOver) return;
+
+    // Bajar 
+    int rows = descendHardDrop();
+
     
+    if (rows <= 0) {
+        lockPiece();
+        return;
+    }
+
+    // Bonus por hard drop: 10 puntos por fila * nivel
+    pendingHardDropBonus = rows * 10 * level;
+
+    // Fijamos la pieza en el board
+    lockPiece();
 }
 
 int ofApp::descendHardDrop() {
-    return 0;
+    if (!currentPiece) return 0;
+
+    int rows = 0;
+    // Mientras se pueda mover hacia abajo, bajamos
+    while (canMovePiece(0, 1)) {
+        movePiece(0, 1);
+        rows++;
+    }
+    return rows;
 }
 //--------------------------------------------------------------
 // Phase 3: Implement ghost piece functionality
@@ -438,7 +479,26 @@ void ofApp::updateMusicState() {
 
 // Phase 2: Adjust gravity speed based on score progression
 void ofApp::recalcSpeed(int linesClearedJustNow) {
+if (linesClearedJustNow <= 0) return;
 
+    // Acumular líneas totales
+    totalLinesCleared += linesClearedJustNow;
+
+    // Subir de nivel cada 10 líneas, por ejemplo
+    int newLevel = 1 + totalLinesCleared / 8;
+
+    if (newLevel != level) {
+        level = newLevel;
+
+        // Reducir el intervalo de caída a medida que sube el nivel
+        float minInterval = 0.18f;      // límite mínimo
+        float step = 0.04f;            // cuánto se reduce por nivel
+
+        dropInterval = baseDropInterval - (level - 1) * step;
+        if (dropInterval < minInterval) {
+            dropInterval = minInterval;
+        }
+    }
 }
 
 //--------------------------------------------------------------

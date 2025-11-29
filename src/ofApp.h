@@ -31,7 +31,7 @@ private:
     // Progression
     int level = 1;                 // Current level (increases by lines)
     int totalLinesCleared = 0;     // Aggregate lines for level calc
-    float baseDropInterval = 0.5f; // Starting gravity interval
+    float baseDropInterval = 0.8f; // Starting gravity interval
 
 
     int pendingHardDropBonus = 0;
