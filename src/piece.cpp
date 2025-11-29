@@ -45,6 +45,8 @@ ofColor Piece::getColor() const {
             return ofColor(140, 90, 50);
         case PieceType::L:
             return ofColor(255, 140, 70);
+        case PieceType::N:
+            return ofColor(255, 215, 0);
         default:
             return ofColor::white; // fallback
     }
@@ -94,6 +96,10 @@ void Piece::setShape() {
             else if (rotationState == 1) cells = {{1,0},{1,1},{1,2},{2,2}};
             else if (rotationState == 2) cells = {{0,1},{1,1},{2,1},{0,2}};
             else                         cells = {{0,0},{1,0},{1,1},{1,2}};
+            break;
+            //new piece
+        case PieceType::N:
+            cells = { {1, 0}, {0, 1}, {1, 1}, {2, 1}, {1, 2} };
             break;
 
     }

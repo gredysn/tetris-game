@@ -46,6 +46,10 @@ void ofApp::setup(){
     loseSound.setVolume(1.0f);
     //gameOver:
     gameOverImage.load("images/GameOver.png");
+    //gameStart:
+    gameStartImage.load("images/TetrisGameStartState.png");
+
+    isStartScreen = true;
 
     updateMusicState();
 
@@ -69,6 +73,13 @@ void ofApp::update(){
 
 //--------------------------------------------------------------
 void ofApp::draw(){
+
+    //gameStart screen
+    if(isStartScreen){
+        ofSetColor(255);
+        gameStartImage.draw(0, 0, ofGetWidth(), ofGetHeight());
+        return;
+    }
     
    // En vez de toda la ventana:
 int boardWidthPixels  = board.getWidth()  * cellSize;
@@ -172,6 +183,12 @@ background.draw(boardOffsetX, boardOffsetY,
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
+    //game start
+    if(isStartScreen && (key == ' ')){
+        isStartScreen = false;
+        resetGame();
+        return;
+    }
      if (key == 'm' || key == 'M') {
        muted = !muted;        // usamos la variable del .h
     updateMusicState();    // que ella se encargue de música y SFX
@@ -393,7 +410,7 @@ void ofApp::switchToPrevPiece() {
 //--------------------------------------------------------------
 PieceType ofApp::getRandomPieceType() {
     // Generate random number between 0 and 6
-    int random = ofRandom(7);
+    int random = ofRandom(8);
     // Map random number to a PieceType
     return static_cast<PieceType>(random);
 }

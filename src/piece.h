@@ -3,7 +3,7 @@
 #include "ofMain.h"
 #include <vector>
 
-enum class PieceType { I, O, T, S, Z, J, L}; // Standard 7 tetromino types
+enum class PieceType { I, O, T, S, Z, J, L, N}; // Standard 7 tetromino types
 
 struct PieceCell { int x, y; }; // Local offsets relative to piece origin
 

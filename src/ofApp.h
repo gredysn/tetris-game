@@ -48,6 +48,8 @@ private:
     ofSoundPlayer music; 
     //Game Over text png
     ofImage gameOverImage;
+    //GameStart State image
+    ofImage gameStartImage;
    
 
     void spawnNewPiece();                      // Create & position next piece
@@ -69,4 +71,6 @@ private:
     void drawGhostPiece();                     // Draw landing shadow of current piece
     void switchToPrevPiece();                  // Swap current piece with previous one
     void drawPreviousPiece();                  // Draw previous piece in sidebar
+    //game start
+    bool isStartScreen = true;
 };
