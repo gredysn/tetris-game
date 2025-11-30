@@ -358,7 +358,47 @@ int ofApp::descendHardDrop() {
 //--------------------------------------------------------------
 // Phase 3: Implement ghost piece functionality
 void ofApp::drawGhostPiece() {
+ // Si no hay pieza o el juego terminó, no dibujamos nada
+    if (!currentPiece || gameOver) return;
 
+    // Guardamos la posición original de la pieza
+    int origX = currentPiece->posX;
+    int origY = currentPiece->posY;
+
+    // "Dejamos caer" la pieza virtualmente hasta donde pueda
+    while (true) {
+        currentPiece->posY++;  // intentamos bajar una fila
+
+        if (!board.canPlacePiece(*currentPiece)) {
+            // Si ya no se puede colocar, nos pasamos una fila
+            currentPiece->posY--;  // retrocedemos una
+            break;
+        }
+    }
+
+    // Ahora la pieza está en la posición de aterrizaje (ghost position)
+    auto cells = currentPiece->getCells(currentPiece->posX, currentPiece->posY);
+
+    // Dibujamos el ghost: contorno transparente
+    ofSetColor(255, 255, 255, 80); // blanco con alpha
+    ofNoFill();
+    for (const auto& cell : cells) {
+        int x = static_cast<int>(cell.x);
+        int y = static_cast<int>(cell.y);
+
+        if (x >= 0 && x < board.getWidth() && y >= 0 && y < board.getHeight()) {
+            ofDrawRectangle(
+                boardOffsetX + x * cellSize + 1,
+                boardOffsetY + y * cellSize + 1,
+                cellSize - 2,
+                cellSize - 2
+            );
+        }
+    }
+
+    // Restauramos la posición original de la pieza para no afectar el juego
+    currentPiece->posX = origX;
+    currentPiece->posY = origY;
 }
 
 //--------------------------------------------------------------
