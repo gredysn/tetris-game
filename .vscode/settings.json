@@ -15,4 +15,5 @@
         "cpp": "cd $dir && g++ $fileName -o $fileNameWithoutExt -g && $dir$fileNameWithoutExt"
     },
     "terminal.explorerKind": "external",
+    "C_Cpp.errorSquiggles": "disabled",
 }

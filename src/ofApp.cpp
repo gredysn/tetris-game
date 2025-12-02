@@ -109,6 +109,8 @@ void ofApp::draw(){
    // En vez de toda la ventana:
 int boardWidthPixels  = board.getWidth()  * cellSize;
 int boardHeightPixels = board.getHeight() * cellSize;
+    boardOffsetX = (ofGetWidth() - boardWidthPixels) / 2;
+    boardOffsetY = (ofGetHeight() - boardHeightPixels) / 2;
 
 background.draw(boardOffsetX, boardOffsetY,
                 boardWidthPixels, boardHeightPixels);
