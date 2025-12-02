@@ -3,9 +3,10 @@ using namespace std;
 
 Board::Board(int width, int height) : width(width), height(height) {
     grid.resize(height, vector<ofColor>(width, ofColor::black));
+    textureGrid.resize(height, vector<int>(width, -1));
 }
 
-void Board::draw(int cellSize, int offsetX, int offsetY) const {
+void Board::draw(int cellSize, int offsetX, int offsetY, bool useTextures, ofImage textures[]) const {
     // Background with transparency 
     ofEnableAlphaBlending();
     static ofImage bg;    
@@ -33,10 +34,21 @@ void Board::draw(int cellSize, int offsetX, int offsetY) const {
     for (int y = 0; y < height; ++y) {
         for (int x = 0; x < width; ++x) {
             if (grid[y][x] != ofColor::black) {
-                ofSetColor(grid[y][x]);
-                ofDrawRectangle(offsetX + x * cellSize + 1,
+
+                if(useTextures && textureGrid[y][x] != -1){
+                    ofSetColor(255);
+                    textures[textureGrid[y][x]].draw(
+                        offsetX + x * cellSize + 1,
+                        offsetY + y * cellSize + 1,
+                        cellSize - 2, cellSize - 2
+                    );
+                }else{
+                    ofSetColor(grid[y][x]);
+                    ofDrawRectangle(offsetX + x * cellSize + 1,
                                 offsetY + y * cellSize + 1,
-                                cellSize - 2, cellSize - 2);
+                                cellSize - 2, cellSize - 2
+                            );
+                }            
             }
         }
     }
@@ -64,6 +76,9 @@ void Board::placePiece(const Piece& piece) {
 
         if(x >= 0 && x < width && y >= 0 && y < height){
             grid[y][x] = piece.getColor();
+
+            //bonus
+            textureGrid[y][x] = piece.texturedPiece;
         }
     }
 }

@@ -50,6 +50,22 @@ void ofApp::setup(){
     gameStartImage.load("images/TetrisGameStartState.png");
 
     isStartScreen = true;
+    //textured pieces png
+    textures[0].load("images/bricksaot.png");
+    textures[1].load("images/rope.png");
+    textures[2].load("images/mikasascarf.png");
+    textures[3].load("images/map.png");
+
+    for(int i = 0; i < 4; i++){
+        textures[i].setImageType(OF_IMAGE_COLOR_ALPHA);
+        textures[i].setCompression(OF_COMPRESS_NONE);
+        textures[i].getTexture().setTextureMinMagFilter(GL_NEAREST, GL_NEAREST);
+    }
+    cout << "0: " <<textures[0].isAllocated() << endl;
+    cout << "1: " <<textures[1].isAllocated() << endl;
+    cout << "2: " <<textures[2].isAllocated() << endl;
+    cout << "3: " <<textures[3].isAllocated() << endl;
+
 
     updateMusicState();
 
@@ -81,7 +97,6 @@ void ofApp::update(){
 }
 //--------------------------------------------------------------
 void ofApp::draw(){
-
     //gameStart screen
     if(isStartScreen){
         ofSetColor(255);
@@ -89,6 +104,7 @@ void ofApp::draw(){
         return;
 
     }
+    
     
    // En vez de toda la ventana:
 int boardWidthPixels  = board.getWidth()  * cellSize;
@@ -98,7 +114,7 @@ background.draw(boardOffsetX, boardOffsetY,
                 boardWidthPixels, boardHeightPixels);
    
     // Draw board
-    board.draw(cellSize, boardOffsetX, boardOffsetY);
+    board.draw(cellSize, boardOffsetX, boardOffsetY, useTextures, textures);
     ofPushStyle();
     drawGhostPiece();
     ofPopStyle();
@@ -107,14 +123,28 @@ background.draw(boardOffsetX, boardOffsetY,
     if (currentPiece) {
         ofPushStyle();
         auto cells = currentPiece->getCells(currentPiece->posX, currentPiece->posY);
-        ofSetColor(currentPiece->getColor());
+        
         for (const auto& cell : cells) {
             int x = static_cast<int>(cell.x);
             int y = static_cast<int>(cell.y);
             if (x >= 0 && x < board.getWidth() && y >= 0 && y < board.getHeight()) {
-                ofDrawRectangle(boardOffsetX + x * cellSize + 1,
-                                boardOffsetY + y * cellSize + 1,
-                                cellSize - 2, cellSize - 2);
+               if(useTextures){
+                ofSetColor(255);
+                textures[currentPiece->getcurrentTexture()].draw(
+                    boardOffsetX + x * cellSize + 1,
+                    boardOffsetY + y * cellSize + 1,
+                    cellSize - 2,
+                    cellSize - 2
+                );
+               }else{
+                ofSetColor(currentPiece->getColor());
+                ofDrawRectangle(
+                     boardOffsetX + x * cellSize + 1,
+                    boardOffsetY + y * cellSize + 1,
+                    cellSize - 2,
+                    cellSize - 2
+                );
+               }
             }
         }
         ofPopStyle();
@@ -176,6 +206,8 @@ background.draw(boardOffsetX, boardOffsetY,
     ofDrawBitmapString("N: New Game", sideX, controlsY + 120);
     ofDrawBitmapString("M: Mute / Unmute", sideX, controlsY + 140);
     ofDrawBitmapString("Q: Hard Drop", sideX, controlsY + 160);
+    ofDrawBitmapString("T: Textured Piece", sideX, controlsY + 180);
+    ofDrawBitmapString("O: Original Piece", sideX, controlsY + 200);
     
     //phase2:
     if (gameOver) {
@@ -204,6 +236,15 @@ void ofApp::keyPressed(int key){
        muted = !muted;       
     updateMusicState();    
 }
+//bonus logic for textured pieces
+    if(key == 't' || key == 'T'){
+        useTextures = true;
+        return;
+    }
+    if(key == 'o' || key == 'O'){
+        useTextures = false;
+        return;
+    }
 
    
     // Allow new game even when gameOver

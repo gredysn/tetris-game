@@ -3,6 +3,7 @@ using namespace std;
 
 Piece::Piece(PieceType type)
 : posX(0), posY(0), rotationState(0), type(type) { // order matches declaration
+    texturedPiece = (int)ofRandom(0, 4);
     setShape();
 }
 

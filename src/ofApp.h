@@ -50,7 +50,10 @@ private:
     ofImage gameOverImage;
     //GameStart State image
     ofImage gameStartImage;
-   
+   //bonus images
+    ofImage textures[4]; //overlays/images for the pieces 
+    bool useTextures = false; //choosing when the piece is a pain color or the textured image
+
 
     void spawnNewPiece();                      // Create & position next piece
     bool canMovePiece(int dx, int dy);         // Collision test for translation

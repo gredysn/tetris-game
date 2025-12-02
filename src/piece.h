@@ -18,6 +18,9 @@ public:
     PieceType getType() const;
 
     int posX, posY; // Piece origin on board (top-left reference point)
+    int texturedPiece;
+    //bonus
+    int getcurrentTexture() const {return texturedPiece;}
 
 private:
     int rotationState;              // 0..3 rotation index
