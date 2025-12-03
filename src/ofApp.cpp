@@ -11,6 +11,7 @@ void ofApp::setup(){
     music.setLoop(true);
     music.setVolume(0.6f);
     
+    nextRageScore = 500;
     
     muted = false;
     
@@ -33,7 +34,7 @@ void ofApp::setup(){
 
     // Audio setup 
     // # Phase 1: Load music file from "data/sounds/" directory
-    rotateSound.load("sounds/rotateBlock.mp3");
+    rotateSound.load("sounds/katana_rotate.mp3");
     rotateSound.setMultiPlay(true);
     rotateSound.setVolume(0.8f);
 
@@ -71,6 +72,15 @@ void ofApp::setup(){
     updateMusicState();
 
     spawnNewPiece();
+
+    titanShakeActive   = false;
+    titanShakeTimer    = 0.0f;
+    titanShakeDuration = 0.6f;   // duración del temblor
+    titanShakeAmount   = 6.0f;   // intensidad del temblor
+
+    erenroarSound.load("sounds/eren_roar.mp3");
+    erenroarSound.setMultiPlay(true);
+    erenroarSound.setVolume(1.0f);
 }
 
 //--------------------------------------------------------------
@@ -85,6 +95,11 @@ void ofApp::update(){
     if (dt <= 0) {
         dt = 1.0f / 60.0f;
     }
+if (titanShakeActive) {
+    if (!erenroarSound.isPlaying()) {
+        titanShakeActive = false;
+    }
+}
 
     // Acumulamos tiempo
     dropTimer += dt;
@@ -104,6 +119,13 @@ void ofApp::draw(){
          gameStartImage.draw(0, 0, ofGetWidth(), ofGetHeight());
         return;
 
+    }
+
+      ofPushMatrix();
+    if (titanShakeActive) {
+        float shakeX = ofRandom(-titanShakeAmount, titanShakeAmount);
+        float shakeY = ofRandom(-titanShakeAmount, titanShakeAmount);
+        ofTranslate(shakeX, shakeY);
     }
      ofSetColor(255);
     fullBackground.draw(0, 0, ofGetWidth(), ofGetHeight());
@@ -125,7 +147,14 @@ int boardHeightPixels = board.getHeight() * cellSize;
                     boardWidthPixels, boardHeightPixels);
     ofDisableAlphaBlending();
     
-    
+    // --- BORDE NEGRO DEL TABLERO ---
+    ofPushStyle();
+    ofNoFill();
+    ofSetColor(0, 0, 0);   // negro sólido
+    ofSetLineWidth(10);     // grosor del borde 
+    ofDrawRectangle(boardOffsetX, boardOffsetY,
+                    boardWidthPixels, boardHeightPixels);
+    ofPopStyle();
     ofSetColor(255);
 
 background.draw(boardOffsetX, boardOffsetY,
@@ -185,6 +214,17 @@ ofDrawRectangle(sideX - uiPadding,
 ofDisableAlphaBlending();
 ofSetColor(255);
 
+  // --- BORDE NEGRO DEL PANEL DE CONTROLES ---
+    ofPushStyle();
+    ofNoFill();
+    ofSetColor(0, 0, 0);   // negro sólido
+    ofSetLineWidth(10);
+    ofDrawRectangle(sideX - uiPadding,
+                    boardOffsetY,
+                    uiWidth,
+                    uiHeight);
+
+    ofPopStyle();
     ofPushMatrix();
     ofTranslate(sideX, boardOffsetY + 20);
     ofScale(1.6f,1.6f);
@@ -241,6 +281,10 @@ ofSetColor(255);
     ofDrawBitmapString("T: Textured Piece", sideX, controlsY + 180);
     ofDrawBitmapString("O: Original Piece", sideX, controlsY + 200);
     
+
+    
+    ofPopMatrix();  
+
     //phase2:
     if (gameOver) {
 
@@ -535,6 +579,20 @@ void ofApp::lockPiece() {
     // Clear pending bonus regardless so it doesn't carry over.
     pendingHardDropBonus = 0;
 
+    bool triggered = false;
+    while (score >= nextRageScore) {
+        nextRageScore += 500;  
+        triggered = true;
+    }
+if (triggered) {
+    titanShakeActive = true;
+
+    if (!muted) {
+        erenroarSound.stop(); 
+        erenroarSound.play();
+    }
+}
+
     dropTimer = 0.0f;
 
     spawnNewPiece();
@@ -627,6 +685,10 @@ void ofApp::resetGame() {
     dropInterval = baseDropInterval;
     dropTimer = 0.0f;
     gameOver = false;
+
+     nextRageScore = 500;       
+    titanShakeActive = false;  
+    titanShakeTimer  = 0.0f;
 
     // Clean up existing pieces
     delete currentPiece; currentPiece = nullptr;

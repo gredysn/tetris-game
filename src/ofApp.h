@@ -54,7 +54,14 @@ private:
     ofImage textures[4]; //overlays/images for the pieces 
     bool useTextures = false; //choosing when the piece is a pain color or the textured image
 
+    bool titanShakeActive;
+float titanShakeTimer;
+float titanShakeDuration;
+float titanShakeAmount;
 
+int nextRageScore;          // cada 500 puntos: 500, 1000, 1500...
+
+ofSoundPlayer erenroarSound;
     void spawnNewPiece();                      // Create & position next piece
     bool canMovePiece(int dx, int dy);         // Collision test for translation
     void movePiece(int dx, int dy);            // Apply movement if valid

@@ -29,3 +29,5 @@ Bonus:
 - Game Start State & Game Over State
 - Press T to see the tetris pieces change skins/textures & press O to go back to the original pieces with a solid color
 - Background picture during the game
+- Sword soundeffect for Rotate
+- every 500 points the screen will shake with erenroar sound effect.
