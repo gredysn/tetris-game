@@ -5,11 +5,12 @@ using namespace std;
 void ofApp::setup(){
     
     background.load("images/aot_pixelated.png");
+    fullBackground.load("images/eren_reiner.png");
 
     music.load("sounds/tetris_theme.mp3");
     music.setLoop(true);
     music.setVolume(0.6f);
-    music.play();
+    
     
     muted = false;
     
@@ -45,7 +46,7 @@ void ofApp::setup(){
     loseSound.setLoop(false);
     loseSound.setVolume(1.0f);
     //gameOver:
-    gameOverImage.load("images/GameOver.png");
+    gameOverImage.load("images/Game-over.png");
     //gameStart:
     gameStartImage.load("images/TetrisGameStartState.png");
 
@@ -104,13 +105,28 @@ void ofApp::draw(){
         return;
 
     }
+     ofSetColor(255);
+    fullBackground.draw(0, 0, ofGetWidth(), ofGetHeight());
     
-    
+    ofEnableAlphaBlending();
+ofSetColor(0, 0, 0, 100);   // cambia 150 para más/menos oscuro (0–255)
+ofDrawRectangle(0, 0, ofGetWidth(), ofGetHeight());
+ofDisableAlphaBlending();
+ofSetColor(255);
    // En vez de toda la ventana:
 int boardWidthPixels  = board.getWidth()  * cellSize;
 int boardHeightPixels = board.getHeight() * cellSize;
     boardOffsetX = (ofGetWidth() - boardWidthPixels) / 2;
     boardOffsetY = (ofGetHeight() - boardHeightPixels) / 2;
+
+ ofEnableAlphaBlending();
+    ofSetColor(0, 0, 0, 240); // negro con transparencia
+    ofDrawRectangle(boardOffsetX, boardOffsetY,
+                    boardWidthPixels, boardHeightPixels);
+    ofDisableAlphaBlending();
+    
+    
+    ofSetColor(255);
 
 background.draw(boardOffsetX, boardOffsetY,
                 boardWidthPixels, boardHeightPixels);
@@ -155,6 +171,20 @@ background.draw(boardOffsetX, boardOffsetY,
     // Draw UI / Sidebar
     ofSetColor(255);
     int sideX = boardOffsetX + board.getWidth() * cellSize + 20;
+
+    // --- NUEVO: panel oscuro detrás del HUD (score, next, controls) ---
+ofEnableAlphaBlending();
+int uiPadding   = 10;
+int uiWidth     = 260;               // ancho del panel de la derecha
+int uiHeight    = boardHeightPixels; // que cubra más o menos toda la altura del tablero
+ofSetColor(0, 0, 0, 200);            // negro semi-transparente
+ofDrawRectangle(sideX - uiPadding,
+                boardOffsetY,
+                uiWidth,
+                uiHeight);
+ofDisableAlphaBlending();
+ofSetColor(255);
+
     ofPushMatrix();
     ofTranslate(sideX, boardOffsetY + 20);
     ofScale(1.6f,1.6f);
@@ -215,15 +245,11 @@ background.draw(boardOffsetX, boardOffsetY,
     if (gameOver) {
 
         ofSetColor(255);
-        gameOverImage.draw(
-            boardOffsetX + (board.getWidth() * cellSize - gameOverImage.getWidth() * 0.3f) / 2,
-            boardOffsetY + (board.getHeight() * cellSize - gameOverImage.getHeight() * 0.3f) / 2,
-         gameOverImage.getWidth() * 0.3f, gameOverImage.getHeight() * 0.3f  
-        );
-        
-        return;
-        
+
+    gameOverImage.draw(0, 0, ofGetWidth(), ofGetHeight());
+    return;
     }
+        
 }
 
 //--------------------------------------------------------------
@@ -547,15 +573,15 @@ void ofApp::playLineClear(int linesCleared) {
 }
 
 void ofApp::updateMusicState() {
-      if (muted) {
-        // Música en mute
+      if (muted || isStartScreen) {
         music.setPaused(true);
-    } else {
-        // Música sonando
-        music.setPaused(false);
-        if (!music.isPlaying() && !gameOver) {
-            music.play();
-        }
+        return;
+    }
+
+    // Si no está muteado y ya salimos de la start screen:
+    music.setPaused(false);
+    if (!music.isPlaying() && !gameOver) {
+        music.play();
     }
 }
 //--------------------------------------------------------------

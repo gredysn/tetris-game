@@ -13,8 +13,8 @@ Don't forget that you must also fill out an evaluation form in Moodle to conside
 
 ## Grading
 
-(STUDENT NUMBER HERE) (STUDENT NAME HERE) (STUDENT EMAIL HERE)
-(STUDENT NUMBER HERE) (STUDENT NAME HERE) (STUDENT EMAIL HERE)
+(843-21-4571) (Gredys N. Colon Ramos) (gredys.colon@upr.edu)
+(843-22-8469) (Guillermo j. Cruz Figueroa) (guillermo.cruz5@upr.edu)
 
 Any project that doesn't compile will receive a 0.
 
@@ -24,3 +24,8 @@ If a partner has no commits in the repositories, they will receive a 0.
 
 ## Student Notes
 If you have any bonus specs, bonus or any details the TA's should know, you should include it here:
+Bonus:
+- Attack On Titan Themed:
+- Game Start State & Game Over State
+- Press T to see the tetris pieces change skins/textures & press O to go back to the original pieces with a solid color
+- Background picture during the game

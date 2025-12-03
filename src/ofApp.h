@@ -44,7 +44,7 @@ private:
     ofSoundPlayer loseSound;       // Game over SFX
     
     ofImage background;
-   
+    ofImage fullBackground;
     ofSoundPlayer music; 
     //Game Over text png
     ofImage gameOverImage;
