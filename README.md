@@ -13,8 +13,8 @@ Don't forget that you must also fill out an evaluation form in Moodle to conside
 
 ## Grading
 
-(843-21-4571) (Gredys N. Colon Ramos) (gredys.colon@upr.edu)
-(843-22-8469) (Guillermo j. Cruz Figueroa) (guillermo.cruz5@upr.edu)
+(Gredys N. Colon Ramos) (gredys.colon@upr.edu)
+(Guillermo j. Cruz Figueroa) (guillermo.cruz5@upr.edu)
 
 Any project that doesn't compile will receive a 0.
 
